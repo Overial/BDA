@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru-RU">
+    <head>
+        <title>
+            {% block title %}
+            {% endblock title %}
+        </title>
+        {% load bootstrap5 %}
+        {% bootstrap_css %} {% bootstrap_javascript %}
+        {% block style %}
+        {% endblock style %}
+        <link rel="shortcut icon"
+              type="image/png"
+              href="{% static 'favicon.ico' %}" />
+        <meta name="description"
+              content="Clonus is a webservice for source code clone detection.">
+        <meta name="keywords"
+              content="clone_detection, plagiarism, document_fingerprinting">
+    </head>
+    <body>
+        <header class="p-3 bg-dark text-white">
+            <div class="container">
+              <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                  <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"></use></svg>
+                </a>
+
+                <a class="navbar-brand" href="{% url 'index' %}" style="font-size: 40px">На главную</a>
+        
+                <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                </ul>
+                
+                <div>
+                    {% if not request.user.is_authenticated %}
+                        <a href="{% url 'login' %}" class="btn btn-outline-light me-2">Войти в аккаунт</a>
+                        <button type="button" class="btn btn-warning">Зарегистрироваться</button>
+                    {% else %}
+                        <div>{{ request.user }}</div>
+                    {% endif %}
+                </div>
+              </div>
+            </div>
+        </header>
+
+        <div class="main">
+            <div class="content flex-fill d-flex align-items-center justify-content-center">
+                {% block content %}
+                {% endblock content %}
+            </div>
+        </div>
+    </body>
+    {% block footer %}
+    {% endblock footer %}
+</html>

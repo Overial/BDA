@@ -1,0 +1,50 @@
+{% extends 'index.html' %}
+
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<div class="form">
+	<div>
+		<h1>Войти в аккаунт</h1>
+	</div>
+	
+	<div class="mb-3">
+		<form method="POST">
+			{% csrf_token %}
+			
+            {{ form|crispy }}
+
+			<div class="mb-3 form-check">
+				<input type="checkbox" class="form-check-input">
+				<label class="form-check-label">Оставаться в аккаунте</label>
+			</div>
+	
+			<input type="hidden" name="next" value="{{ request.GET.next }}">
+
+			<button type="submit" class="btn btn-primary">Войти</button>
+		</form>
+	</div>
+	
+	<div class="mb-3">
+		<label class="form-label">
+			Забыли пароль?
+			<a style="text-decoration: underline;" href="#">
+				Сброс пароля
+			</a>
+		</label>
+	</div>
+
+	<div class="mb-3">
+		<label class="form-label">
+			Все еще нет аккаунта?
+			<a style="text-decoration: underline;" href="#">
+				Зарегистрироваться
+			</a>
+		</label>
+	</div>
+</div>
+
+{% endblock content %}
