@@ -1,6 +1,13 @@
 from django import forms
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Fieldset, Layout, Submit
+from django.contrib.auth.forms import UserCreationForm
+
+
+class RegisterForm(UserCreationForm):
+    email = forms.EmailField(required=True,
+                             label='Электронная почта',
+                             error_messages={'exists': 'Указанный адрес уже используется'})
 
 
 class FileToFileForm(forms.Form):

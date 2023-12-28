@@ -1,9 +1,12 @@
 from django.shortcuts import render, redirect
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse
 from django.contrib.auth.views import LoginView
+from django.views.generic.edit import FormView
+from django.contrib.auth import login
 from pathlib import Path
 from collections import deque
 from itertools import combinations
+from django.urls import reverse_lazy
 from more_itertools import ilen
 
 from clonus.forms import FileToFileForm, ManyFilesForm
@@ -12,11 +15,41 @@ from clonus.models import Package, MultiPackage
 from clonus.methods.fp_method_builder import FingerprintMethodBuilder
 from clonus.methods.method_configurator import MethodConfigurator
 
+from .forms import *
+
 
 class ClonusLoginView(LoginView):
     template_name = 'login.html'
     fields = '__all__'
     redirect_authenticated_user = True
+
+    def get_success_url(self) -> str:
+        if self.request.POST.get('next') is not None:
+            return self.request.POST.get('next')
+        else:
+            return reverse_lazy('index')
+
+
+# Register user view
+class ClonusRegisterView(FormView):
+    template_name = 'register.html'
+    form_class = RegisterForm
+    redirect_authenticated_user = True
+    success_url = reverse_lazy('index')
+
+    def form_valid(self, form) -> HttpResponse:
+        user = form.save()
+
+        if user is not None:
+            login(self.request, user)
+
+        return super(ClonusRegisterView, self).form_valid(form)
+    
+    def get(self, request, *args, **kwargs) -> HttpResponse:
+        if self.request.user.is_authenticated:
+            return redirect('index')
+
+        return super(ClonusRegisterView, self).get(request, *args, **kwargs)
 
 
 def index(request: HttpRequest):
